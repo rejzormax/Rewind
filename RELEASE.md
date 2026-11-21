@@ -4,9 +4,9 @@ Rewind uses public releases from **rejzormax/Rewind**. Source pushes run checks 
 
 ## Repository setup
 
-- Publish this repository's `main` branch to **rejzormax/Rewind** as public source. Keep original assets, SDKs, build outputs and secrets ignored.
+- Publish this repository's `main` branch to **rejzormax/Rewind** as public source, including the approved Rewind logo files. Keep other assets, SDKs, build outputs, recordings and secrets ignored.
 - Add an Actions secret named **DISCORD_GITHUB_WEBHOOK** containing the existing webhook for **#github-updates**. Never commit that URL.
-- Add an Actions secret named **REWIND_LOGO_SVG** containing the private `assets/rewind.svg` contents to use the R logo in automated releases. Otherwise CI uses the generic fallback mark.
+- The public `assets/rewind.svg` supplies the release logo automatically; no logo secret is required.
 - The release job requests repository contents write access. Build and notification jobs are read-only.
 
 ## Publish a version

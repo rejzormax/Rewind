@@ -1,7 +1,7 @@
 # Rewind branding
 
-The MIT license covers Rewind's public application source and the generic mark in `LogoFallback.xaml`.
+The MIT license covers Rewind's application source and the generic mark in `LogoFallback.xaml`.
 
-The original Rewind logo and artwork in `assets/` are separate brand assets. They are excluded from the public source repository and are not licensed under the application's MIT license. No trademark license is granted for the Rewind name or original logo. Forks can use the public fallback mark or their own artwork.
+Rewind's original SVG, icon and PNG logo files are public so unmodified Rewind builds and contributor builds can use the correct artwork. They are separate brand assets from the application's MIT license. Permission is granted to display them as part of those Rewind builds. No trademark license is granted for unrelated products or renamed forks; those should use their own artwork.
 
-Official builds can restore the private SVG from the repository's `REWIND_LOGO_SVG` Actions secret. Ignore rules keep original assets out of source commits; artwork included in distributed downloads remains extractable.
+Builds render `assets/rewind.svg` automatically. No logo secret is required. Only the approved logo filenames are included in Git; other assets, generated logo resources and local files stay ignored.

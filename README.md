@@ -49,7 +49,7 @@ Setup downloads verified tools into **.tools/**. The application has no NuGet pa
 
 ## Public source and branding
 
-Application source uses MIT. Original **assets/** and the generated private logo dictionary are ignored by Git. Public checkouts use a generic fallback mark. Official release branding can come from a repository secret. Original brand assets are separate from the code license; see **BRANDING.md**. Assets bundled in an executable remain extractable.
+Application source uses MIT. Rewind's SVG, app icon and logo images are included in **assets/** so GitHub builds use the R logo automatically. Other assets, generated logo resources, tools, recordings, outputs and secrets stay ignored. The name and original artwork are separate brand assets; see **BRANDING.md**.
 
 Use **scripts/prepare-public-source.ps1** for a source-only ZIP, or commit this repository normally. **PUBLISHING.md** explains visibility and licensing.
 

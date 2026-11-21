@@ -4,6 +4,15 @@ $destination = Join-Path $projectRoot ('artifacts/public-source-' + [Guid]::NewG
 New-Item -ItemType Directory -Force -Path $destination | Out-Null
 $rootFiles = @('.gitignore','Directory.Build.props','Launch Rewind.cmd','LICENSE','NuGet.Config','README.md','rewind-branding.json','rewind-updates.json','THIRD-PARTY-NOTICES.md','PUBLISHING.md','RELEASE.md','BRANDING.md')
 foreach ($name in $rootFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $name) -Destination $destination }
+$logoNames = @('rewind.svg','rewind.ico','rewind.png','rewind-icon.png','rewind-transparent.png','rewind-preview.png')
+foreach ($name in $logoNames) {
+    $source = Join-Path $projectRoot "assets/$name"
+    if (Test-Path -LiteralPath $source) {
+        $logoDestination = Join-Path $destination 'assets'
+        New-Item -ItemType Directory -Force -Path $logoDestination | Out-Null
+        Copy-Item -LiteralPath $source -Destination $logoDestination
+    }
+}
 foreach ($folder in @('src','tests','scripts','.github')) {
     $sourceRoot = Join-Path $projectRoot $folder
     foreach ($file in Get-ChildItem -LiteralPath $sourceRoot -File -Recurse) {

@@ -11,7 +11,7 @@ if (Test-Path -LiteralPath $privateVector) {
     $pathData = $fallback.DocumentElement.LastChild.InnerText
     New-Item -ItemType Directory -Force -Path $assetRoot | Out-Null
     [IO.File]::WriteAllText($privateVector,'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 80"><path fill="white" d="' + $pathData + '"/></svg>')
-    Write-Output 'Private branding is absent; generating a generic public-build icon.'
+    Write-Output 'Logo source is absent; generating a fallback icon.'
 }
 if (-not $pathData) { throw 'The Rewind vector mark is missing.' }
 $geometry = [Windows.Media.Geometry]::Parse($pathData)

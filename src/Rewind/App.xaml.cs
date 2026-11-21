@@ -19,7 +19,7 @@ public partial class App : Application
         }
         catch (IOException)
         {
-            // Public source checkouts use the generic mark when private branding is absent.
+            // Use the fallback mark when the project's logo resource is absent.
         }
     }
 

@@ -14,6 +14,12 @@ artifacts/
 *.key
 *.snk
 **/Properties/PublishProfiles/*.pubxml.user
-assets/
+assets/*
+!assets/rewind.svg
+!assets/rewind.ico
+!assets/rewind.png
+!assets/rewind-icon.png
+!assets/rewind-transparent.png
+!assets/rewind-preview.png
 src/Rewind/Resources/Logo.xaml
 .secrets/

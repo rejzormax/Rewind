@@ -18,14 +18,6 @@ jobs:
       - name: Prepare the capture engine
         shell: pwsh
         run: ./scripts/setup.ps1 -SkipSdk
-      - name: Restore private release branding
-        shell: pwsh
-        env:
-          REWIND_LOGO_SVG: ${{ secrets.REWIND_LOGO_SVG }}
-        run: |
-          if ($env:REWIND_LOGO_SVG) {
-            New-Item -ItemType Directory -Force -Path assets | Out-Null
-            [IO.File]::WriteAllText((Join-Path $PWD 'assets/rewind.svg'),$env:REWIND_LOGO_SVG)
           }
       - name: Build release
         shell: pwsh
