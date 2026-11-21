@@ -1,0 +1,3 @@
+The Rewind name and original logo are project branding, separate from the application's MIT license.
+
+You may display these logo files in unmodified Rewind builds and builds made to contribute to Rewind. Renamed forks and unrelated products should use their own branding. No trademark license is granted for those products.

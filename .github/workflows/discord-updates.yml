@@ -1,0 +1,19 @@
+name: Discord updates
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Post to github-updates
+        shell: pwsh
+        env:
+          DISCORD_GITHUB_WEBHOOK: ${{ secrets.DISCORD_GITHUB_WEBHOOK }}
+        run: ./scripts/send-discord-update.ps1
