@@ -5,7 +5,6 @@ using Rewind.Core;
 
 namespace Rewind.Services;
 
-/// <summary>Discord's local IPC transport, with framed reads, ping replies, backoff and graceful activity clearing.</summary>
 public sealed class DiscordRpcService : IAsyncDisposable
 {
     private readonly string _pipePrefix;
@@ -83,7 +82,6 @@ public sealed class DiscordRpcService : IAsyncDisposable
                         args = new { pid = Environment.ProcessId, activity = BuildActivity() }, nonce = activityNonce }), token);
                     await accepted.Task.WaitAsync(TimeSpan.FromSeconds(5), token);
                     SetStatus("Connected"); retrySeconds = 5;
-                    // Discord renders elapsed time itself. Read ping/close frames without a polling loop.
                     await reader;
                 }
                 catch (Exception ex) when (ex is IOException or TimeoutException or JsonException or InvalidDataException)

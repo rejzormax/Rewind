@@ -223,7 +223,7 @@
                 <Button x:Name="BrowseFolderButton" Content="Choose" Grid.Column="1" Margin="12,0,0,0" Click="ChooseFolder"/>
               </Grid>
               <CheckBox x:Name="TrayToggle" Content="Keep Rewind in the tray when minimized or closed" Margin="0,22,0,0" Checked="GeneralSettingChanged" Unchecked="GeneralSettingChanged"/>
-              <CheckBox x:Name="NotificationsToggle" Content="Show a notification when a clip is saved" Margin="0,17,0,0" Checked="GeneralSettingChanged" Unchecked="GeneralSettingChanged"/>
+              <CheckBox x:Name="NotificationsToggle" Content="Show a popup and play a sound when a clip is saved" Margin="0,17,0,0" Checked="GeneralSettingChanged" Unchecked="GeneralSettingChanged"/>
               <CheckBox x:Name="CheckUpdatesToggle" Content="Check for new Rewind versions" Margin="0,17,0,0" Checked="GeneralSettingChanged" Unchecked="GeneralSettingChanged"/>
             </StackPanel></Border>
             <Grid Margin="0,19,0,7"><Button Content="Open diagnostics log" Style="{StaticResource QuietButton}" HorizontalAlignment="Left" Click="OpenLog"/><Button Content="Quit Rewind" Style="{StaticResource QuietButton}" Foreground="#D9A9A3" HorizontalAlignment="Right" Click="QuitRewind"/></Grid>

@@ -190,7 +190,6 @@ public sealed class RecorderService : IAsyncDisposable
         {
             _saving = true; Changed?.Invoke();
             var wait = Stopwatch.StartNew();
-            // Let the segment containing the hotkey press finish, without pausing capture.
             while (wait.Elapsed < TimeSpan.FromSeconds(6) && _running)
             {
                 RefreshCatalog();

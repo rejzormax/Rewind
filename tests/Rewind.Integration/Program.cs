@@ -33,6 +33,12 @@ if (args.Contains("--live-discord"))
     return;
 }
 
+if (args.Contains("--check-notifications"))
+{
+    await ClipNotificationChecks.RunAsync(projectRoot);
+    return;
+}
+
 if (args.Contains("--render-layout"))
 {
     var rendered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -166,7 +172,6 @@ var rpcServer = Task.Run(async () =>
     using (var data = JsonDocument.Parse(handshake.Payload))
         Check(handshake.Opcode == 0 && data.RootElement.GetProperty("client_id").GetString() == "123456789012345678", "Discord handshake uses the configured application ID");
     var ready = RpcFrame.Encode(1, new { cmd = "DISPATCH", evt = "READY", data = new { } });
-    // Fragment the server reply to exercise real named-pipe framing.
     for (var offset = 0; offset < ready.Length; offset += 3)
         await server.WriteAsync(ready.AsMemory(offset, Math.Min(3, ready.Length - offset)), rpcTimeout.Token);
     var ping = RpcFrame.Encode(3, new { probe = "hello" });

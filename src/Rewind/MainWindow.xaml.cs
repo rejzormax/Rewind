@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private RecorderService? _recorder;
     private GlobalHotkey? _hotkey;
     private Forms.NotifyIcon? _tray;
+    private ClipNotificationWindow? _clipNotification;
     private Forms.ToolStripMenuItem? _traySave, _trayCapture;
     private readonly DispatcherTimer _toastTimer = new() { Interval = TimeSpan.FromSeconds(7) };
     private IReadOnlyList<SavedClip> _clips = [];
@@ -32,7 +33,6 @@ public partial class MainWindow : Window
     private volatile bool _windowVisible = true;
     private bool _trayCaptureState;
     private int _libraryRevision;
-    private string? _latestSavedClip;
     private string _currentPage = "Library";
     private readonly Stack<string> _backHistory = new(), _forwardHistory = new();
     private int _galleryColumns = 4;
@@ -98,7 +98,6 @@ public partial class MainWindow : Window
         catch (Exception ex) { _loading = false; Report(ex); }
     }
 
-    // Render deterministic layout snapshots for visual checks.
     internal void PrepareLayoutPreview()
     {
         _renderingPreview = true;
@@ -137,6 +136,7 @@ public partial class MainWindow : Window
         _updates.DisposeAsync().AsTask().GetAwaiter().GetResult();
         _engineCancellation.Dispose();
         _toastTimer.Stop();
+        _clipNotification?.Dispose();
     }
 
     private void CreateTray()
@@ -152,7 +152,6 @@ public partial class MainWindow : Window
         var icon = System.Drawing.Icon.ExtractAssociatedIcon(Path.Combine(AppContext.BaseDirectory, "Rewind.exe")) ?? System.Drawing.SystemIcons.Application;
         _tray = new Forms.NotifyIcon { Icon = icon, Text = "Rewind · Buffer off", ContextMenuStrip = menu, Visible = true };
         _tray.DoubleClick += (_, _) => Dispatcher.Invoke(ShowFromTray);
-        _tray.BalloonTipClicked += (_, _) => Dispatcher.Invoke(() => { if (_latestSavedClip != null) OpenExternal(_latestSavedClip); });
     }
 
     private async Task EnsureRecorderAsync()
@@ -237,6 +236,7 @@ public partial class MainWindow : Window
     {
         if (_loading) return;
         _settings = _settings with { MinimizeToTray = TrayToggle.IsChecked == true, ClipNotifications = NotificationsToggle.IsChecked == true, CheckForUpdates = CheckUpdatesToggle.IsChecked == true };
+        if (!_settings.ClipNotifications) _clipNotification?.Dismiss(false);
         _updates.SetEnabled(_settings.CheckForUpdates);
         Persist();
     }
@@ -412,10 +412,15 @@ public partial class MainWindow : Window
         Dispatcher.BeginInvoke(() =>
         {
             if (_shutdownInProgress) return;
-            _latestSavedClip = clip.Path;
-            ShowToast($"Moment kept. {clip.DurationLabel} saved to your clip library.");
-            if (_settings.ClipNotifications && _tray != null)
-                _tray.ShowBalloonTip(3500, "Rewind · Moment kept", $"Saved {clip.DurationLabel}. Click to play your clip.", Forms.ToolTipIcon.Info);
+            if (_settings.ClipNotifications)
+            {
+                try
+                {
+                    _clipNotification ??= new ClipNotificationWindow(OpenExternal, _paths.Log);
+                    _clipNotification.ShowClip(clip, (DisplayBox.SelectedItem as CaptureDisplay)?.Id ?? _settings.MonitorId);
+                }
+                catch (Exception error) { _paths.Log("Clip notification: " + error.Message); }
+            }
             _ = ReloadLibraryAsync();
         });
     }
@@ -584,6 +589,7 @@ public partial class MainWindow : Window
         if (_shutdownInProgress) return;
         _shutdownInProgress = true; _quitting = true; ArmButton.IsEnabled = false; SaveClipButton.IsEnabled = false;
         _toastTimer.Stop();
+        _clipNotification?.Dispose();
         try
         {
             _engineCancellation.Cancel();

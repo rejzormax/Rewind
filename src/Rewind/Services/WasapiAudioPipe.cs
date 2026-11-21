@@ -5,7 +5,6 @@ using Rewind.Core;
 
 namespace Rewind.Services;
 
-/// <summary>Native shared-mode WASAPI capture. PCM goes straight to a bounded OS pipe; no NuGet audio stack.</summary>
 public sealed class WasapiAudioPipe : IAsyncDisposable
 {
     private readonly NamedPipeServerStream _pipe;
@@ -68,7 +67,7 @@ public sealed class WasapiAudioPipe : IAsyncDisposable
                 (1, 24) => "s24le", (1, 32) => "s32le",
                 _ => throw new NotSupportedException("This audio device uses an unsupported PCM format.")
             };
-            var flags = 0x00040000u | (_loopback ? 0x00020000u : 0u); // event callback + loopback
+            var flags = 0x00040000u | (_loopback ? 0x00020000u : 0u);
             Check(client.Initialize(0, flags, 2_000_000, 0, formatPointer, 0));
             Check(client.SetEventHandle(samplesReady.SafeWaitHandle.DangerousGetHandle()));
             Check(client.GetBufferSize(out var maximumFrames));
@@ -86,7 +85,6 @@ public sealed class WasapiAudioPipe : IAsyncDisposable
             _connected.TrySetResult();
             while (!token.IsCancellationRequested)
             {
-                // The timeout also supplies silence when the loopback endpoint has no active sound.
                 samplesReady.WaitOne(20);
                 Check(capture.GetNextPacketSize(out var packetFrames));
                 while (packetFrames > 0 && !token.IsCancellationRequested)
@@ -133,7 +131,6 @@ public sealed class WasapiAudioPipe : IAsyncDisposable
 
     private void WriteSilence(long frames, byte[] silence, int blockAlign, ref long written, CancellationToken token)
     {
-        // A wildly invalid timestamp must not create an unbounded silence allocation/write.
         frames = Math.Min(frames, silence.Length / blockAlign * 10L);
         while (frames > 0 && !token.IsCancellationRequested)
         {

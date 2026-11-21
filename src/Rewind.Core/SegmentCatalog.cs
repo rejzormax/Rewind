@@ -18,7 +18,6 @@ public static class SegmentCatalog
             var fields = line.Split(',');
             if (fields.Length != 3) continue;
             var name = fields[0].Trim('"', '\r');
-            // Never accept arbitrary paths supplied by a malformed manifest.
             if (name != Path.GetFileName(name) || !TryGetSequence(name, out var sequence)) continue;
             if (!double.TryParse(fields[1], CultureInfo.InvariantCulture, out var start) ||
                 !double.TryParse(fields[2], CultureInfo.InvariantCulture, out var end) ||
@@ -47,7 +46,6 @@ public static class SegmentCatalog
         for (var i = 1; i < selected.Length; i++)
             if (selected[i].Sequence != selected[i - 1].Sequence + 1 || selected[i].Start - selected[i - 1].End > 0.15)
                 throw new InvalidOperationException("The replay buffer has a gap. Restart capture and try again.");
-        // Keep the first segment's keyframe so exports require no video re-encoding.
         return new ClipPlan(selected, selected[0].Start, end);
     }
 

@@ -66,7 +66,6 @@ public static class CaptureArguments
         else
         {
             args.AddRange(["-init_hw_device", $"d3d11va=rewind:{display.AdapterIndex}", "-filter_hw_device", "rewind"]);
-            // A global graph receives filter_hw_device, unlike an independent lavfi input graph.
             videoGraph = $"ddagrab=output_idx={display.OutputIndex}:framerate={fps}:draw_mouse={mouse}:dup_frames=1";
             if (backend == CaptureBackend.Intel) videoGraph += ",hwmap=derive_device=qsv,scale_qsv=format=nv12";
             if (backend == CaptureBackend.DesktopCpu) videoGraph +=

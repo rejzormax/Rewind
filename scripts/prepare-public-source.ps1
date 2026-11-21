@@ -17,7 +17,7 @@ foreach ($folder in @('src','tests','scripts','.github','docs','installer')) {
         if ($relative -match '(^|[\\/])(bin|obj|\.git|\.vs)([\\/]|$)' -or
             $relative -eq 'src\Rewind\Resources\Logo.xaml' -or $relative -eq 'src/Rewind/Resources/Logo.xaml' -or
             $file.Name -like '.env*' -or $file.Extension -in @('.key','.pfx','.p12','.snk','.log','.user')) { continue }
-        if ($file.Extension -notin @('.cs','.csproj','.xaml','.manifest','.ps1','.md','.yml','.yaml','.xml','.json','.props','.config','.iss','.txt','.cmd')) { continue }
+        if ($file.Extension -notin @('.cs','.csproj','.xaml','.manifest','.ps1','.md','.yml','.yaml','.xml','.json','.props','.config','.iss','.txt','.cmd','.wav')) { continue }
         $target = Join-Path $destination $relative
         New-Item -ItemType Directory -Force -Path (Split-Path $target -Parent) | Out-Null
         Copy-Item -LiteralPath $file.FullName -Destination $target

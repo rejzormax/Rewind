@@ -3,7 +3,6 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Rewind.Services;
 
-/// <summary>Windows closes this handle on process termination, including crashes, killing orphan capture engines.</summary>
 internal static class ChildProcessJob
 {
     private static readonly SafeFileHandle? Job = Create();
@@ -18,7 +17,7 @@ internal static class ChildProcessJob
         var job = CreateJobObject(0, null);
         if (job.IsInvalid) { job.Dispose(); return null; }
         var information = new ExtendedLimits();
-        information.Basic.LimitFlags = 0x2000; // JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+        information.Basic.LimitFlags = 0x2000;
         if (SetInformationJobObject(job, 9, ref information, (uint)Marshal.SizeOf<ExtendedLimits>())) return job;
         job.Dispose(); return null;
     }

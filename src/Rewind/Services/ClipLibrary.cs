@@ -75,7 +75,6 @@ public sealed class ClipLibrary(CaptureTools tools, AppPaths paths)
         }
         else
         {
-            // Reuse the capture executable instead of shipping a second ~100 MB probing binary.
             try
             {
                 var result = await ProcessRunner.RunAsync(tools.Ffmpeg, ["-hide_banner", "-i", path], TimeSpan.FromSeconds(10), token);

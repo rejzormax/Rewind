@@ -1,0 +1,41 @@
+<Window x:Class="Rewind.ClipNotificationWindow" x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="388" Height="112" WindowStyle="None" ResizeMode="NoResize"
+    AllowsTransparency="True" Background="Transparent" ShowInTaskbar="False"
+    ShowActivated="False" Focusable="False" Topmost="True" WindowStartupLocation="Manual"
+    AutomationProperties.Name="Rewind clip notification" KeyboardNavigation.TabNavigation="None">
+  <Grid x:Name="NotificationRoot" Margin="8">
+    <Grid.RenderTransform><TranslateTransform x:Name="SlideTransform"/></Grid.RenderTransform>
+    <Border Background="#F51B1B1E" BorderBrush="#48484E" BorderThickness="1" CornerRadius="14">
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="32"/></Grid.ColumnDefinitions>
+        <Button x:Name="PlayClipButton" Click="OpenClip" Background="Transparent" BorderThickness="0"
+            Focusable="False" Padding="16,13,0,13" HorizontalContentAlignment="Stretch"
+            AutomationProperties.Name="Play the saved clip">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="42"/><ColumnDefinition Width="13"/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <Grid Width="42" Height="42" VerticalAlignment="Center">
+              <Border Background="#303035" CornerRadius="11">
+                <Viewbox Margin="8"><Canvas Width="96" Height="80"><Path Fill="White" Data="{StaticResource RewindLogoGeometry}"/></Canvas></Viewbox>
+              </Border>
+              <Border Width="16" Height="16" CornerRadius="8" Background="#B4E3B9" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-3,-3">
+                <Path Data="M 3.5,8 L 6.5,11 L 12,5.5" Stroke="#17271B" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+              </Border>
+            </Grid>
+            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+              <TextBlock Text="REWIND" Foreground="#A7A7AF" FontSize="10" FontWeight="SemiBold"/>
+              <TextBlock Text="You've clipped the moment" Foreground="#F5F5F7" FontSize="15" FontWeight="SemiBold" Margin="0,4,0,0"/>
+              <TextBlock x:Name="ClipDetailText" Foreground="#B8B8BF" FontSize="11" FontWeight="Normal" Margin="0,4,0,0"/>
+            </StackPanel>
+          </Grid>
+        </Button>
+        <Button Grid.Column="1" Width="22" Height="22" Margin="0,9,8,0" VerticalAlignment="Top"
+            Style="{StaticResource QuietButton}" Focusable="False" Padding="0" Click="ClosePopup"
+            ToolTip="Dismiss" AutomationProperties.Name="Dismiss clip notification">
+          <Path Data="M 3,3 L 11,11 M 11,3 L 3,11" Stroke="#96969F" StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="14" Height="14"/>
+        </Button>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

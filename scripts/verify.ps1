@@ -14,6 +14,8 @@ if (-not $NoRestore) {
 }
 & $dotnetCommand run --project $project -c Release --no-restore
 if ($LASTEXITCODE -ne 0) { throw 'Integration checks failed.' }
+& $dotnetCommand run --project $project -c Release --no-build --no-restore -- --check-notifications
+if ($LASTEXITCODE -ne 0) { throw 'Clip notification checks failed.' }
 $fixtureProject = Join-Path $projectRoot 'tests/Rewind.UpdateFixture/Rewind.UpdateFixture.csproj'
 if (-not $NoRestore) {
     & $dotnetCommand restore $fixtureProject --configfile (Join-Path $PSScriptRoot 'nuget.config')
