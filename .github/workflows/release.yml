@@ -1,0 +1,62 @@
+name: Publish release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Prepare the capture engine
+        shell: pwsh
+        run: ./scripts/setup.ps1 -SkipSdk
+      - name: Restore private release branding
+        shell: pwsh
+        env:
+          REWIND_LOGO_SVG: ${{ secrets.REWIND_LOGO_SVG }}
+        run: |
+          if ($env:REWIND_LOGO_SVG) {
+            New-Item -ItemType Directory -Force -Path assets | Out-Null
+            [IO.File]::WriteAllText((Join-Path $PWD 'assets/rewind.svg'),$env:REWIND_LOGO_SVG)
+          }
+      - name: Build release
+        shell: pwsh
+        run: ./scripts/build.ps1 -OfficialRelease -OutputDirectory ./dist/Rewind
+      - name: Verify replay and Discord
+        shell: pwsh
+        run: ./scripts/verify.ps1
+      - name: Package
+        shell: pwsh
+        run: ./scripts/package.ps1 -DistributionDirectory ./dist/Rewind
+      - name: Save the Windows download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rewind-Windows-x64
+          path: |
+            dist/Rewind-Windows-x64.zip
+            dist/Rewind-Windows-x64.zip.sha256
+          retention-days: 7
+      - name: Publish version tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = ([xml](Get-Content Directory.Build.props -Raw)).Project.PropertyGroup.Version
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'The release tag does not match the application version.' }
+          gh release create $env:GITHUB_REF_NAME ./dist/Rewind-Windows-x64.zip ./dist/Rewind-Windows-x64.zip.sha256 --repo $env:GITHUB_REPOSITORY --verify-tag --title "Rewind $version" --generate-notes
+          if ($LASTEXITCODE -ne 0) { throw 'The GitHub release could not be published.' }
+      - name: Announce the completed release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          DISCORD_GITHUB_WEBHOOK: ${{ secrets.DISCORD_GITHUB_WEBHOOK }}
+        run: ./scripts/send-discord-update.ps1 -ReleaseTag $env:GITHUB_REF_NAME

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup>
+  <ItemGroup><EmbeddedResource Include="../../rewind-branding.json" LogicalName="Rewind.Branding.json" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="../../rewind-updates.json" LogicalName="Rewind.Updates.json" /></ItemGroup>
+</Project>
